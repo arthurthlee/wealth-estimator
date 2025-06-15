@@ -1,2 +1,6 @@
 wealth_estimator_api.egg-info
 .venv
+.pytest_cache
+tests/wealth_estimator/app/__pycache__
+wealth_estimator/__pycache__
+wealth_estimator/app/__pycache__

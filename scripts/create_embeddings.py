@@ -23,9 +23,11 @@ def create_embeddings(pictures_folder, net_worths_file):
                 }
     folder = Path('wealth_estimator/data')
     folder.mkdir(parents=True, exist_ok=True)
+    results = json.dumps(data)
     with open(folder/"data.json", "w", encoding="utf-8") as f:
-        f.write(json.dumps(data))
+        f.write(results)
     print(f"Created embeddings file at {folder/'data.json'}")
+    return results
 
 if __name__ == "__main__":
     create_embeddings()

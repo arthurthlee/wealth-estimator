@@ -1,0 +1,59 @@
+import json
+from pathlib import Path
+from wealth_estimator.app import main
+from wealth_estimator.app.main import get_matches
+from unittest.mock import patch
+import numpy as np
+from fastapi.testclient import TestClient
+from wealth_estimator.app.main import app
+
+client = TestClient(app)
+
+def test_get_matches():
+    extract_face_embedding_return_value = {}
+    with open(Path('tests/test_data/warren_buffett.json'), "r") as f:
+        extract_face_embedding_return_value = [np.array(json.loads(f.read())['warren_buffett']['embedding'])]
+    with open(Path('tests/test_data/warren_buffett.jpg'), "rb") as f, \
+        patch('wealth_estimator.app.utils.face_recognition.face_encodings', return_value=extract_face_embedding_return_value), \
+        patch(
+            'wealth_estimator.app.logic.cosine_similarity', 
+            return_value=[np.array(
+                [0.86786353,0.79310643,0.80702359,0.84250704,0.80878076,0.72954176,0.93514087]
+            )]
+        ): 
+        result = get_matches(f, 3)
+        assert result == {
+            "estimated_net_worth": 164210828075, # Weighted average of the net worths of the 3 matches below, weighted by similarity 
+            "top_matches": [
+                {"name": "warren_buffett", "similarity": 0.9351}, 
+                {"name": "bill_gates", "similarity": 0.8679}, 
+                {"name": "jeff_bezos", "similarity": 0.8425}
+            ]
+        }
+
+def test_predict_selfie_invalid_content_type():
+    response = client.post(
+        "/predict",
+        files={"image": ("fake.txt", b"not-an-image", "text/plain")},
+        data={"top_n_similar": 3}
+    )
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Invalid file type"
+
+def test_predict_selfie_invalid_top_n_similar():
+    response = client.post(
+        "/predict?top_n_similar=0",
+        files={"image": ("face.jpg", b"fake-image-bytes", "image/jpeg")}
+    )
+    assert response.status_code == 400
+    assert response.json()["detail"] == "top_n_similar must be greater than 0"
+
+def test_value_error_from_get_matches():
+    with patch.object(main, "get_matches", side_effect=ValueError("Internal error")):
+        response = client.post(
+            "/predict",
+            files={"image": ("face.jpg", b"fake-image-bytes", "image/jpeg")},
+            data={"top_n_similar": 3}
+        )
+        assert response.status_code == 400
+        assert response.json()["detail"] == "Internal error"
