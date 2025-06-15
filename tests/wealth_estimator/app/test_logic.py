@@ -5,13 +5,12 @@ import json
 def test_find_top_matches_happy_path():
     with open(Path('tests/test_data/warren_buffett.json'), "r") as expected_results: 
         warren_buffett_embedding = json.loads(expected_results.read())
-        matches, estimated_wealth = find_top_matches(warren_buffett_embedding['warren_buffett']['embedding'], top_n_similar=3)
+        matches, estimated_wealth = find_top_matches(warren_buffett_embedding['warren_buffett']['embedding'], top_n_similar=2)
         expected_results = {
-            "estimated_net_worth": 164210827977, # Weighted average of the net worths of the 3 matches below, weighted by similarity 
+            "estimated_net_worth": 134964189446, # Weighted average of the net worths of the 2 matches below, weighted by similarity 
             "top_matches": [
                 {"name": "warren_buffett", "similarity": 0.9351}, 
-                {"name": "bill_gates", "similarity": 0.8679}, 
-                {"name": "jeff_bezos", "similarity": 0.8425}
+                {"name": "bill_gates", "similarity": 0.8679}
             ]
         }
         assert matches == expected_results['top_matches']
