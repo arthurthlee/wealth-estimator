@@ -1,0 +1,3 @@
+-e . # Install production dependencies
+click==8.2.1
+pandas==2.3.0
