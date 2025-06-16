@@ -1,9 +1,23 @@
+from typing import Tuple
 import numpy as np
 import json
 from pathlib import Path
 from sklearn.metrics.pairwise import cosine_similarity
 
-def find_top_matches(user_embedding: np.ndarray, top_n_similar: int = 3):
+def find_top_matches(user_embedding: np.ndarray, top_n_similar: int = 3) -> Tuple[dict, float]:
+    """
+    Find top N matches for a given embedding of a user picture
+
+    :user_embedding: ndarray containing the embedding of the user.
+    :top_n_similar: How many of the top similar people to return.
+    :return: ("matches": {
+        "name": name of match,
+        "similarity" (float): similarity score of match
+    }, 
+    "estimated_net_worth" (int): Weighted average of net worth between the top N matches, weighted by similarity)
+    """
+
+
     # If no user embedding was found, return an empty array for matches, and None for estimated wealth
     if len(user_embedding) == 0:
         return [], None
@@ -26,6 +40,9 @@ def find_top_matches(user_embedding: np.ndarray, top_n_similar: int = 3):
     similarities = cosine_similarity([user_embedding], embeddings)[0]
     print(cosine_similarity([user_embedding], embeddings))
     # Get the N most similar pictures
+    # Argsort to get indices sorted by ascending order
+    # [::-1] to reverse it
+    # [:top_n_similar] to only return the top N results
     top_indices = similarities.argsort()[::-1][:top_n_similar]
 
     matches = []
@@ -45,7 +62,7 @@ def find_top_matches(user_embedding: np.ndarray, top_n_similar: int = 3):
         estimated_wealth += similarities[i] * net_worths[i]
 
     if total_sim > 0:
-        # Now divide the summed esimated wealth with the summed similarity scores of all matches
+        # Now divide the summed esimated wealth with the summed similarity scores of all matches (1.3 in the example above)
         # This gives a weighted average of the net worths of all the matches
         estimated_wealth /= total_sim
 

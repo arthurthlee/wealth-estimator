@@ -9,7 +9,21 @@ IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'}
 @click.command()
 @click.option("--pictures_folder", default=Path("data/pictures"), help="Path containing pictures")
 @click.option("--net_worths_file", default=Path("data/net_worths.csv"), help="Path containing net worths csv file")
-def create_embeddings(pictures_folder, net_worths_file):
+def create_embeddings(pictures_folder: Path, net_worths_file: Path):
+    """
+    Creates embeddings for every picture in the given picture folder, 
+    assigns the net worth to each picture with the matching person in the net_worths_file, 
+    and then outputs the resulting dict into a json file.
+
+    :pictures_folder: Path containing pictures to create embeddings for.
+    :net_worths_file: Path containing net worths file to match embeddings.
+    :return: Dict of data containing {
+        "firstname_lastname": {
+            "embedding": ndarray,
+            "net_worth": int
+        }
+    }.
+    """
     data = {}
     df = pd.read_csv(net_worths_file)
     for file in Path(pictures_folder).iterdir():
@@ -27,7 +41,7 @@ def create_embeddings(pictures_folder, net_worths_file):
     with open(folder/"data.json", "w", encoding="utf-8") as f:
         f.write(results)
     print(f"Created embeddings file at {folder/'data.json'}")
-    return results
+    return data
 
 if __name__ == "__main__":
     create_embeddings()
