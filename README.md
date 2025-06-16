@@ -31,6 +31,11 @@ After installing CMAKE and the requirements, you can also run it locally without
 `python .\scripts\run_locally.py --image_path .\tests\test_data\warren_buffett.jpg`
 
 
+To add new embeddings of people and their net worth, add the picture of whoever you'd like to `scripts/data/pictures`, and their net worth to `scripts/data/net_worths.csv`
+Then run 
+`python scripts/create_embeddings.py`
+This will create an embeddings file in `wealth_estimator/data/data.json`
+
 Model Considerations:
 face-recognition library in Python
 From researching online, it seems like the face-recognition library is decent for basic tasks, and is easy to set up, requiring fewer dependencies and lower hardware requirements compared to a more robust model such as InsightFace. Since it is mentioned that accuracy is less important compared to robustness, we can go with the face-recognition library, as we are not sure about where the project will be deployed (Mobile? Super fast AWS EC2 instance with GPU? Office computer?)
@@ -61,5 +66,8 @@ wealth-estimator/
 
 With this structure, I'm only including the wealth_estimator app and data folders into the Dockerfile, since the files and data in scripts/ are not necessary for inference time (unless we decide to make an endpoint/UI to be able to create new embeddings for new people)
 
-Improvements:
+Future Improvements:
 - Add logging
+- Create notebook for running the `create_embeddings.py` and `run_locally.py` scripts
+- Create full train/test pipeline
+- Make model choice modular, perhaps by using models from Huggingface
