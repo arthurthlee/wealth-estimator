@@ -7,8 +7,8 @@ from wealth_estimator.app.utils import extract_face_embedding
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'}
 
 @click.command()
-@click.option("--pictures_folder", default=Path("data/pictures"), help="Path containing pictures")
-@click.option("--net_worths_file", default=Path("data/net_worths.csv"), help="Path containing net worths csv file")
+@click.option("--pictures_folder", default=Path("scripts/data/pictures"), help="Path containing pictures")
+@click.option("--net_worths_file", default=Path("scripts/data/net_worths.csv"), help="Path containing net worths csv file")
 def create_embeddings(pictures_folder: Path, net_worths_file: Path):
     """
     Creates embeddings for every picture in the given picture folder, 

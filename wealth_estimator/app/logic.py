@@ -38,7 +38,6 @@ def find_top_matches(user_embedding: np.ndarray, top_n_similar: int = 3) -> Tupl
     # Find the cosine similarity between the user_embedding and all the existing precomputed embeddings
     # We're only passing in one user embedding at a time, so we can just take the first similarity
     similarities = cosine_similarity([user_embedding], embeddings)[0]
-    print(cosine_similarity([user_embedding], embeddings))
     # Get the N most similar pictures
     # Argsort to get indices sorted by ascending order
     # [::-1] to reverse it
