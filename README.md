@@ -1,73 +1,160 @@
+Here's a more readable and polished version of your README formatted for GitHub:
 
-This wealth estimator project will:
-Accept a selfie image as input.
-Returns:
-- An estimated potential net worth for the user
-- A list of top 3 most similar wealthy individuals and their similarity scores
+---
 
+# 💰 Wealth Estimator API
 
-Installation instructions:
-To run this locally in a container, git clone the repo, and make sure that you have installed Docker, and it is currently running on your machine.
-Run the following lines in a console:
-`docker build -t wealth-estimator .`
-`docker run -p 80:80 wealth-estimator`
+This project estimates a user's potential net worth based on a selfie, and returns the top 3 most visually similar wealthy individuals along with similarity scores.
 
-Then, open a browser and go to the url http://localhost/docs
-Click on the POST /predict endpoint, and click "Try it out"
-Type in whatever top N value you desire
-Click "Execute", and view the Server response box below
+---
 
+## 📸 What It Does
 
-To run unit tests, first install CMAKE and make sure that it is part of your PATH (CMAKE used by face_recognition library in Python)
-Then, create a virtual env if you'd like, by typing
-`python -m venv .venv`
-`.venv/Scripts/activate` on Windows, or `.venv/bin/activate` on Mac/Linux
+* Accepts a selfie image as input
+* Returns:
 
-Then install the requirements and run pytest:
-`pip install -r requirements/dev.txt`
-`pytest`
+  * An **estimated potential net worth**
+  * A **list of the top 3 most similar wealthy individuals** (with similarity scores)
 
-After installing CMAKE and the requirements, you can also run it locally without using Docker by running this command from the project folder:
-`python .\scripts\run_locally.py --image_path .\tests\test_data\warren_buffett.jpg`
+---
 
+## 🚀 Getting Started
 
-To add new embeddings of people and their net worth, add the picture of whoever you'd like to `scripts/data/pictures`, and their net worth to `scripts/data/net_worths.csv`
-Then run 
-`python scripts/create_embeddings.py`
-This will create an embeddings file in `wealth_estimator/data/data.json`
+### 🐳 Run Locally in Docker
 
-Model Considerations:
-face-recognition library in Python
-From researching online, it seems like the face-recognition library is decent for basic tasks, and is easy to set up, requiring fewer dependencies and lower hardware requirements compared to a more robust model such as InsightFace. Since it is mentioned that accuracy is less important compared to robustness, we can go with the face-recognition library, as we are not sure about where the project will be deployed (Mobile? Super fast AWS EC2 instance with GPU? Office computer?)
+1. Clone the repo:
 
-Similarity Considerations:
-I primarily weighed cosine similarity versus euclidean distance. Cosine similarity measures the cosine of the angle between two vectors, regardless of vector length. For image recognition, this is more desirable, as this would focus on the actual content of the image, regardless of brightness or contrast, whereas Euclidean distance would take the magnitude of the vectors in account, making brightness and contrast more heavily affect the predicted result (something we wouldn't want in this scenario, as our image could be dark or washed out)
+   ```bash
+   git clone https://github.com/your-repo/wealth-estimator.git
+   cd wealth-estimator
+   ```
 
-Architectural Considerations:
-I've hosted the model on an AWS free tier account. I've added the Docker image to ECR, and I am hosting it on ECS Fargate, so I don't need to manually configure an EC2 instance. 
+2. Make sure [Docker](https://www.docker.com/products/docker-desktop/) is installed and running.
 
+3. Build and run the container:
 
+   ```bash
+   docker build -t wealth-estimator .
+   docker run -p 80:80 wealth-estimator
+   ```
+
+4. Open your browser to [http://localhost/docs](http://localhost/docs)
+
+5. Try it out:
+
+   * Click on the `POST /predict` endpoint
+   * Click **"Try it out"**
+   * Upload an image and set the `top_n_similar` value
+   * Click **"Execute"** to see the results
+
+---
+
+### 🧪 Running Unit Tests
+
+1. Install [CMake](https://cmake.org/download/) and ensure it's added to your system `PATH` (required by `face_recognition`)
+
+2. (Optional) Create and activate a virtual environment:
+
+   ```bash
+   python -m venv .venv
+   # On Windows:
+   .venv\Scripts\activate
+   # On Mac/Linux:
+   source .venv/bin/activate
+   ```
+
+3. Install dependencies and run tests:
+
+   ```bash
+   pip install -r requirements/dev.txt
+   pytest
+   ```
+
+---
+
+### 🖥️ Running Locally Without Docker
+
+Once CMake and dependencies are installed, run:
+
+```bash
+python scripts/run_locally.py --image_path tests/test_data/warren_buffett.jpg
+```
+
+---
+
+## 🧠 Adding New Data
+
+To add new wealthy individuals:
+
+1. Add their image to: `scripts/data/pictures/`
+2. Add their net worth to: `scripts/data/net_worths.csv`
+
+Then generate the updated embeddings:
+
+```bash
+python scripts/create_embeddings.py
+```
+
+This creates a new `data.json` in: `wealth_estimator/data/`
+
+---
+
+## 🧰 Project Structure
+
+```
 scripts/
-├── data/                       
-│   ├── pictures/             # Pictures of various wealthy people
-|   └── net_worths.csv        # Net worths of each person
-├── create_embeddings.py      # Script to create an data.json embeddings file for the pictures and net_worths in the scripts/data folder
-└── run_locally.py            # Script to run the program locally, by passing in the local path of an image and the number of matches to return
-wealth-estimator/
+├── data/
+│   ├── pictures/              # Images of wealthy individuals
+│   └── net_worths.csv         # CSV of net worths
+├── create_embeddings.py       # Generates embeddings from images and net worths
+└── run_locally.py             # Run prediction locally with a sample image
+
+wealth_estimator/
 ├── app/
-│   ├── main.py               # Contains the main FastAPI /predict endpoint
-│   ├── models.py             # Contains the definitions of the endpoint response
-│   ├── logic.py              # Contains the function for finding the top N matches, given a user image embedding
-│   ├── utils.py              # Contains a utility function to extract face embeddings given image bytes. Used for creating a new dataset of embeddings of wealthy people, and also for creating embeddings of the user image
+│   ├── main.py                # FastAPI app with /predict endpoint
+│   ├── models.py              # Response models for the API
+│   ├── logic.py               # Logic for similarity and matching
+│   └── utils.py               # Embedding extraction functions
 ├── requirements.txt
 ├── Dockerfile
 ├── setup.py
 └── README.md
+```
 
-With this structure, I'm only including the wealth_estimator app and data folders into the Dockerfile, since the files and data in scripts/ are not necessary for inference time (unless we decide to make an endpoint/UI to be able to create new embeddings for new people)
+Only the `wealth_estimator/` app and data folders are included in the Docker container. The `scripts/` folder is excluded since it's not required at inference time.
 
-Future Improvements:
-- Add logging
-- Create notebook for running the `create_embeddings.py` and `run_locally.py` scripts
-- Create full train/test pipeline
-- Make model choice modular, perhaps by using models from Huggingface
+---
+
+## 🤖 Model Considerations
+
+* **Library**: [`face_recognition`](https://github.com/ageitgey/face_recognition)
+* **Why**: Easy to use, minimal dependencies, and good enough accuracy for the project scope
+* **Deployment Flexibility**: Suitable for various environments (local machine, cloud, etc.)
+
+---
+
+## 📏 Similarity Metric
+
+* **Metric Used**: Cosine Similarity
+* **Reason**: More robust to changes in image brightness or contrast compared to Euclidean distance, making it ideal for comparing facial features regardless of lighting conditions.
+
+---
+
+## 🏗️ Deployment Architecture
+
+* Deployed on **AWS ECS Fargate** using the **Free Tier**
+* Docker image is pushed to **Amazon ECR**
+* No manual EC2 configuration required
+
+---
+
+## 🌱 Future Improvements
+
+* [ ] Add logging and monitoring
+* [ ] Create Jupyter notebooks for `create_embeddings.py` and `run_locally.py`
+* [ ] Implement a full training/testing pipeline
+* [ ] Modularize model selection (e.g., integrate HuggingFace models)
+
+---
+
+Let me know if you'd like a badge-based summary (e.g., Docker, Python version, license) or usage examples in `curl`/Python!
