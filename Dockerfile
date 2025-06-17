@@ -20,8 +20,7 @@ WORKDIR /app
 
 # Copy only necessary files
 COPY setup.py ./
-COPY wealth_estimator/app ./wealth_estimator/app
-COPY wealth_estimator/data ./wealth_estimator/data
+COPY wealth_estimator ./wealth_estimator
 COPY requirements/ ./requirements/
 
 # Install Python dependencies (from setup.py or requirements.txt)
@@ -32,4 +31,4 @@ RUN pip install --upgrade pip && \
 EXPOSE 80
 
 # Run FastAPI app using uvicorn
-CMD ["uvicorn", "wealth_estimator.app.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "wealth_estimator.api.main:app", "--host", "0.0.0.0", "--port", "80"]
