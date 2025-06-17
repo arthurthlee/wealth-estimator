@@ -156,5 +156,3 @@ Only the `wealth_estimator/` app and data folders are included in the Docker con
 * Make config file which can determine logging levels for dev, stg, prd, model endpoints, etc
 
 ---
-
-Let me know if you'd like a badge-based summary (e.g., Docker, Python version, license) or usage examples in `curl`/Python!
