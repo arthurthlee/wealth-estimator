@@ -148,8 +148,12 @@ Only the `wealth_estimator/` app and data folders are included in the Docker con
 
 ---
 
-## 🌱 Future Improvements
+## Assumptions
+* AWS infrastructure is obviously basic, as this project is for an assignment. In a real-world business application, I would need to create autoscaling groups and scale the task definition according to the amount of traffic coming into the server. 
+* I am also assuming that administrators would run the create_embeddings.py script manually when adding new pictures to be compared with. In a real-world application, this could probably be included as a UI page instead of needing to be run offline. See Future Improvements below
 
+## 🌱 Future Improvements
+* create_embeddings script could run as a cron job, creating embeddings by downloading all files from an S3 folder, and updating the data.json file, also on S3. This data.json file could be downloaded upon inference time. We could also use Redis and cache the embeddings, and upon inference, read from the Redis cache, while updating the cache with new embeddings every X days/weeks/months.
 * Create Jupyter notebooks for `create_embeddings.py` and `run_locally.py`
 * Implement a full training/testing pipeline
 * Modularize model selection (e.g., integrate HuggingFace models)
