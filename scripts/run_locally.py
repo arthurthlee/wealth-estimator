@@ -4,7 +4,7 @@ from pathlib import Path
 
 import click
 from fastapi.testclient import TestClient
-from wealth_estimator.app.main import app
+from wealth_estimator.api.main import app
 
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'}
 

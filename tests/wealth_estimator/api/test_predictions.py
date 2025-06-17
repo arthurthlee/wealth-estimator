@@ -3,7 +3,8 @@ from pathlib import Path
 from unittest.mock import patch
 import numpy as np
 from fastapi.testclient import TestClient
-from wealth_estimator.app.main import app
+from wealth_estimator.api.main import app
+from wealth_estimator.core.logger import Logger
 
 client = TestClient(app)
 
@@ -12,9 +13,9 @@ def test_predict_selfie_happy_path():
     with open(Path('tests/test_data/warren_buffett.json'), "r") as f:
         extract_face_embedding_return_value = [np.array(json.loads(f.read())['warren_buffett']['embedding'])]
     with open(Path('tests/test_data/warren_buffett.jpg'), "rb") as f, \
-        patch('wealth_estimator.app.utils.face_recognition.face_encodings', return_value=extract_face_embedding_return_value), \
+        patch('wealth_estimator.services.utils.face_recognition.face_encodings', return_value=extract_face_embedding_return_value), \
         patch(
-            'wealth_estimator.app.logic.cosine_similarity', 
+            'wealth_estimator.services.logic.cosine_similarity', 
             return_value=[np.array(
                 [0.86786353,0.79310643,0.80702359,0.84250704,0.80878076,0.72954176,0.93514087]
             )]
@@ -53,7 +54,7 @@ def test_predict_selfie_invalid_top_n_similar():
 
 def test_value_error_from_get_matches():
     with open(Path('tests/test_data/warren_buffett.jpg'), "rb") as f, \
-    patch("wealth_estimator.app.main.extract_face_embedding", side_effect=ValueError("Internal error")):
+    patch("wealth_estimator.api.predictions.extract_face_embedding", side_effect=ValueError("Internal error")):
         response = client.post(
             "/predict",
             files={"image": ("face.jpg", f, "image/jpeg")},

@@ -3,6 +3,10 @@ import numpy as np
 from PIL import Image
 import io
 
+from wealth_estimator.core.logger import Logger
+
+log = Logger.get_logger("utils")
+
 def extract_face_embedding(image_bytes: bytes) -> np.ndarray:
     """
     Get embedding for the given image_bytes
@@ -15,6 +19,6 @@ def extract_face_embedding(image_bytes: bytes) -> np.ndarray:
     img_array = np.array(img)
     faces = face_recognition.face_encodings(img_array)
     if not faces:
-        print("No face detected in image.")
+        log.error('No face detected in image.')
         return np.array([])
     return faces[0]  # Use the first face found in the image

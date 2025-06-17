@@ -1,8 +1,11 @@
+from wealth_estimator.core.logger import Logger
 from typing import Tuple
 import numpy as np
 import json
 from pathlib import Path
 from sklearn.metrics.pairwise import cosine_similarity
+
+log = Logger.get_logger("logic")
 
 def find_top_matches(user_embedding: np.ndarray, top_n_similar: int = 3) -> Tuple[dict, float]:
     """
@@ -65,4 +68,6 @@ def find_top_matches(user_embedding: np.ndarray, top_n_similar: int = 3) -> Tupl
         # This gives a weighted average of the net worths of all the matches
         estimated_wealth /= total_sim
 
+    log.info(f"Matches: {json.dumps(matches)}")
+    log.info(f"Estimated wealth: {estimated_wealth}")
     return matches, round(estimated_wealth)

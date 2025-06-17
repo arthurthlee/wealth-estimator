@@ -150,10 +150,10 @@ Only the `wealth_estimator/` app and data folders are included in the Docker con
 
 ## 🌱 Future Improvements
 
-* [ ] Add logging and monitoring
-* [ ] Create Jupyter notebooks for `create_embeddings.py` and `run_locally.py`
-* [ ] Implement a full training/testing pipeline
-* [ ] Modularize model selection (e.g., integrate HuggingFace models)
+* Create Jupyter notebooks for `create_embeddings.py` and `run_locally.py`
+* Implement a full training/testing pipeline
+* Modularize model selection (e.g., integrate HuggingFace models)
+* Make config file which can determine logging levels for dev, stg, prd, model endpoints, etc
 
 ---
 

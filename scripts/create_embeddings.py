@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 import click
 import pandas as pd
-from wealth_estimator.app.utils import extract_face_embedding
+from wealth_estimator.services.utils import extract_face_embedding
 
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'}
 

@@ -1,5 +1,5 @@
 from pathlib import Path
-from wealth_estimator.app.logic import find_top_matches
+from wealth_estimator.services.logic import find_top_matches
 import json
 
 def test_find_top_matches_happy_path():
